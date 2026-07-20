@@ -53,8 +53,14 @@ function Home() {
     return (
         <div className="container">
             <div className="hero-section">
+                <div className="hero-badge">Student collaboration • mentor-led growth</div>
                 <h1 className="hero-title">Build with students, mentors, and founders.</h1>
                 <p>Discover real ideas, join ambitious teams, and turn side projects into momentum with live collaboration tools.</p>
+                <div className="hero-stats">
+                    <div><strong>120+</strong><span>active ideas</span></div>
+                    <div><strong>1:1</strong><span>mentor sessions</span></div>
+                    <div><strong>24/7</strong><span>team momentum</span></div>
+                </div>
                 <input
                     type="text"
                     className="form-control hero-search"
@@ -62,6 +68,21 @@ function Home() {
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
+            </div>
+
+            <div className="feature-grid">
+                <div className="feature-card">
+                    <h3>Find collaborators faster</h3>
+                    <p>Browse live project proposals, match with teammates, and move from idea to build in one place.</p>
+                </div>
+                <div className="feature-card">
+                    <h3>Book mentor sessions</h3>
+                    <p>Reserve design reviews, code tutoring, and startup guidance without the usual back-and-forth.</p>
+                </div>
+                <div className="feature-card">
+                    <h3>Launch with confidence</h3>
+                    <p>Share your work, track requests, and present your next milestone with a polished portfolio feel.</p>
+                </div>
             </div>
 
             <div className="grid-2" style={{ alignItems: 'start' }}>
