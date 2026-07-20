@@ -18,9 +18,23 @@ function Register() {
 
         try {
             const res = await axios.post(apiUrl('/api/auth/register'), { name, email, password, role });
+            
+            // CONTEXT FIX: Read the exact keys directly out of response data mapping
             if (res.data && res.data.token) {
                 localStorage.setItem('token', res.data.token);
-                localStorage.setItem('user', JSON.stringify(res.data.user));
+                
+                // Construct cleanly out of root response parameters
+                const userPayload = {
+                    id: res.data.id,
+                    name: res.data.name,
+                    email: res.data.email,
+                    role: res.data.role,
+                    skills: res.data.skills || [],
+                    bio: res.data.bio || '',
+                    domain: res.data.domain || ''
+                };
+                
+                localStorage.setItem('user', JSON.stringify(userPayload));
                 navigate('/dashboard');
             }
         } catch (err) {
