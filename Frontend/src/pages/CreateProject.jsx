@@ -11,7 +11,8 @@ function CreateProject() {
     const [contactEmail, setContactEmail] = useState('');
     const [stage, setStage] = useState('Ideation');
     const [error, setError] = useState('');
-    
+    const [success, setSuccess] = useState('');
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -23,42 +24,43 @@ function CreateProject() {
         e.preventDefault();
         const token = localStorage.getItem('token');
         const tags = techStack.split(',').map(tag => tag.trim()).filter(tag => tag !== '');
-        
-        axios.post('http://localhost:5000/api/projects', 
+
+        axios.post('/api/projects',
             { title, description, techStack: tags, author, contactEmail, stage },
             { headers: { Authorization: `Bearer ${token}` } }
         )
-        .then(() => navigate('/dashboard'))
+        .then(() => {
+            setSuccess('Your project has been published successfully.');
+            setTimeout(() => navigate('/dashboard'), 900);
+        })
         .catch(err => {
             setError(err.response?.data?.message || 'Failed to publish project listing.');
         });
     };
 
     return (
-        <div className="container">
+        <div className="container" style={{ maxWidth: '700px' }}>
             <div className="form-container">
-                <h2 style={{ fontSize: '28px', marginBottom: '24px', fontWeight: '700', textAlign: 'center', color: '#00e6ff' }}>Propose a Project</h2>
+                <h2 style={{ fontSize: '28px', marginBottom: '8px', fontWeight: '700', textAlign: 'center', color: '#00e6ff' }}>Launch a new project</h2>
+                <p style={{ textAlign: 'center', color: 'var(--text-secondary)', marginBottom: '24px' }}>Share your idea with mentors and collaborators in one step.</p>
                 {error && <p style={{ color: '#ff3b30', marginBottom: '16px', textAlign: 'center' }}>{error}</p>}
+                {success && <p style={{ color: '#8fffba', marginBottom: '16px', textAlign: 'center' }}>{success}</p>}
                 <form onSubmit={handleSubmit}>
-                    <InputField label="Project Title" value={title} onChange={e => setTitle(e.target.value)} required placeholder="e.g. Relational Campus Ecosystem Network" />
-                    <InputField label="Description & Scope" isTextArea={true} rows={4} value={description} onChange={e => setDescription(e.target.value)} required placeholder="Describe the objectives..." />
-                    
-                    {/* Milestone Stage Picker dropdown options */}
+                    <InputField label="Project title" value={title} onChange={e => setTitle(e.target.value)} required placeholder="e.g. AI study planner" />
+                    <InputField label="Description & scope" isTextArea={true} rows={4} value={description} onChange={e => setDescription(e.target.value)} required placeholder="Describe your goal, audience, and what kind of help you need" />
                     <div className="form-group" style={{ marginBottom: '20px' }}>
-                        <label>Current Status Milestone</label>
-                        <select className="form-control" value={stage} onChange={e => setStage(e.target.value)} style={{ background: '#0a0a14' }}>
-                            <option value="Ideation">Ideation Stage</option>
-                            <option value="Prototyping">Prototyping Wireframes</option>
-                            <option value="Development">Active Code Development</option>
-                            <option value="Testing">QA & Testing Cycle</option>
+                        <label>Current status milestone</label>
+                        <select className="form-control" value={stage} onChange={e => setStage(e.target.value)}>
+                            <option value="Ideation">Ideation</option>
+                            <option value="Prototyping">Prototyping</option>
+                            <option value="Development">Development</option>
+                            <option value="Testing">Testing</option>
                         </select>
                     </div>
-
-                    <InputField label="Required Tech Stack / Skills (comma separated)" value={techStack} onChange={e => setTechStack(e.target.value)} placeholder="e.g. React, Node.js, UI/UX Design" />
-                    <InputField label="Your Name" value={author} onChange={e => setAuthor(e.target.value)} required placeholder="Your full name" />
-                    <InputField label="University Email" type="email" value={contactEmail} onChange={e => setContactEmail(e.target.value)} required placeholder="yourname@university.edu" />
-                    
-                    <button type="submit" className="btn-primary" style={{ width: '100%', marginTop: '10px' }}>Publish to Feed</button>
+                    <InputField label="Required tech stack / skills" value={techStack} onChange={e => setTechStack(e.target.value)} placeholder="e.g. React, Node.js, UI/UX" />
+                    <InputField label="Your name" value={author} onChange={e => setAuthor(e.target.value)} required placeholder="Your full name" />
+                    <InputField label="Contact email" type="email" value={contactEmail} onChange={e => setContactEmail(e.target.value)} required placeholder="yourname@university.edu" />
+                    <button type="submit" className="btn-primary" style={{ width: '100%', marginTop: '10px' }}>Publish to feed</button>
                 </form>
             </div>
         </div>
