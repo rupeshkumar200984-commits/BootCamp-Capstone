@@ -1,0 +1,242 @@
+/* ==========================================
+   AXON DESIGN SYSTEM - CYBER-NEON SKIN
+   ========================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg-primary: #05050a;
+  --bg-secondary: #0a0a14;
+  --bg-accent: #101026;
+  
+  --border-color: #1f1f42;
+  --border-focus: #7000ff;
+  
+  --text-primary: #f4f4f5;
+  --text-secondary: #a1a1c2;
+  --text-muted: #57577a;
+  
+  /* Glowing Neon Matrix Tokens */
+  --brand-cyan: #00e6ff;
+  --brand-violet: #7000ff;
+  --neon-glow: 0px 0px 15px rgba(112, 0, 255, 0.4);
+  
+  --system-red: #ff3b30;
+  --system-green: #34c759;
+  
+  --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  
+  /* 3D Glass Layer Shadow Elements */
+  --shadow-3d: 0px 1px 2px rgba(255, 255, 255, 0.05) inset, 
+               0px 10px 30px rgba(0, 0, 0, 0.7);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  letter-spacing: -0.01em;
+  background-image: radial-gradient(circle at 50% -20%, #150036 0%, var(--bg-primary) 70%);
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+/* ==========================================
+   NAVIGATION HEADER SYSTEM
+   ========================================== */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.nav-logo {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-decoration: none;
+  letter-spacing: -0.03em;
+}
+
+.nav-logo span {
+  color: var(--brand-cyan);
+  text-shadow: 0 0 8px rgba(0, 230, 255, 0.6);
+}
+
+.nav-links a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.nav-links a:hover {
+  color: var(--brand-cyan);
+  text-shadow: 0 0 8px rgba(0, 230, 255, 0.4);
+}
+
+/* ==========================================
+   HERO HEADINGS LOOP
+   ========================================== */
+.hero-section {
+  text-align: center;
+  padding: 60px 0 40px;
+}
+
+.hero-title {
+  font-size: 46px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  margin-bottom: 24px;
+  background: linear-gradient(135deg, #ffffff 0%, #7000ff 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ==========================================
+   TACTILE 3D CARD DESIGNS
+   ========================================== */
+.project-card {
+  background: linear-gradient(135deg, #0a0a16 0%, #06060c 100%);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 28px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-3d);
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transform: perspective(1000px) translateZ(0);
+}
+
+.project-card:hover {
+  border-color: var(--border-focus);
+  transform: translateY(-4px);
+  box-shadow: 0px 1px 2px rgba(255, 255, 255, 0.08) inset,
+              0px 15px 35px rgba(0, 0, 0, 0.8),
+              0px 0px 20px rgba(112, 0, 255, 0.2);
+}
+
+.card-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+
+.card-desc {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 22px;
+}
+
+/* ==========================================
+   INPUTS FIELD WRAPPERS
+   ========================================== */
+.form-container {
+  background: linear-gradient(135deg, #0c0c1a 0%, #05050a 100%);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-3d);
+  border-radius: 14px;
+  padding: 36px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.form-control {
+  width: 100%;
+  background-color: #040408;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 14px 16px;
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: 0 0 10px rgba(112, 0, 255, 0.2);
+}
+
+/* ==========================================
+   GLOWING TACTILE BUTTONS
+   ========================================== */
+.btn-primary {
+  background: linear-gradient(180deg, #7000ff 0%, #5200c2 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.2) inset,
+              0px 4px 0px #3c008a,
+              0px 6px 12px rgba(0, 0, 0, 0.4);
+  transition: all 0.15s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(1px);
+  box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.2) inset,
+              0px 3px 0px #3c008a,
+              0px 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.btn-primary:active {
+  transform: translateY(4px);
+  box-shadow: none;
+}
+
+/* ==========================================
+   TAGS ELEMENT STRIPS
+   ========================================== */
+.tech-tag {
+  display: inline-block;
+  background: rgba(0, 230, 255, 0.06);
+  border: 1px solid rgba(0, 230, 255, 0.15);
+  color: var(--brand-cyan);
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  margin-right: 8px;
+  margin-bottom: 8px;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 22px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-color);
+}
