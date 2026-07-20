@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import InputField from '../components/InputField.jsx';
+import { apiUrl } from '../lib/api.js';
 
 function Register() {
     const [name, setName] = useState('');
@@ -16,7 +17,7 @@ function Register() {
         setError('');
 
         try {
-            const res = await axios.post('/api/auth/register', { name, email, password, role });
+            const res = await axios.post(apiUrl('/api/auth/register'), { name, email, password, role });
             if (res.data && res.data.token) {
                 localStorage.setItem('token', res.data.token);
                 localStorage.setItem('user', JSON.stringify(res.data.user));

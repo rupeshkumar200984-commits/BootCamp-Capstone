@@ -8,12 +8,27 @@ const connectDB = require('./config/db');
 const app = express();
 const server = http.createServer(app);
 
-// Enable CORS for frontend integration
-app.use(cors({
-    origin: 'http://localhost:5173',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5173,http://127.0.0.1:5173,https://*.vercel.app').split(',').map(origin => origin.trim()).filter(Boolean);
+
+const corsOptions = {
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.some(allowedOrigin => {
+            if (allowedOrigin.includes('*')) {
+                const pattern = new RegExp(`^${allowedOrigin.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/\\\*/g, '.*')}$`);
+                return pattern.test(origin);
+            }
+            return allowedOrigin === origin;
+        })) {
+            callback(null, true);
+        } else {
+            callback(new Error('Origin not allowed by CORS'));
+        }
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
-}));
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -29,7 +44,7 @@ app.use('/api/auth', require('./routes/authRoutes'));
 
 const io = new Server(server, {
     cors: {
-        origin: 'http://localhost:5173',
+        origin: allowedOrigins,
         methods: ['GET', 'POST']
     }
 });

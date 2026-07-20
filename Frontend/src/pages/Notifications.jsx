@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { apiUrl } from '../lib/api.js';
 
 function Notifications() {
     const [alerts, setAlerts] = useState([]);
@@ -8,7 +9,7 @@ function Notifications() {
     const token = localStorage.getItem('token');
 
     const fetchAlerts = () => {
-        axios.get('http://localhost:5000/api/users/notifications', {
+        axios.get(apiUrl('/api/users/notifications'), {
             headers: { Authorization: `Bearer ${token}` }
         })
         .then(res => setAlerts(res.data))
@@ -21,7 +22,7 @@ function Notifications() {
 
     const handleClearAll = async () => {
         try {
-            await axios.put('http://localhost:5000/api/users/notifications', {}, {
+            await axios.put(apiUrl('/api/users/notifications'), {}, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             fetchAlerts();

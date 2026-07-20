@@ -13,7 +13,7 @@ function Chat() {
 
     // 1. Fetch initial historical database records
     const fetchChatLogs = () => {
-        axios.get(`http://localhost:5000/api/users/messages/${userId}`, {
+        axios.get(apiUrl(`/api/users/messages/${userId}`), {
             headers: { Authorization: `Bearer ${token}` }
         })
         .then(res => setMessages(res.data))
@@ -58,7 +58,7 @@ function Chat() {
 
         try {
             // Save to database permanently via standard HTTP Post
-            const res = await axios.post('http://localhost:5000/api/users/messages', 
+            const res = await axios.post(apiUrl('/api/users/messages'),
                 { recipientId: userId, text: typedText },
                 { headers: { Authorization: `Bearer ${token}` } }
             );

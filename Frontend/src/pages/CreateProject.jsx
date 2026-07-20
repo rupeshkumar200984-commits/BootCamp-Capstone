@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import InputField from '../components/InputField.jsx';
+import { apiUrl } from '../lib/api.js';
 
 function CreateProject() {
     const [title, setTitle] = useState('');
@@ -25,7 +26,7 @@ function CreateProject() {
         const token = localStorage.getItem('token');
         const tags = techStack.split(',').map(tag => tag.trim()).filter(tag => tag !== '');
 
-        axios.post('/api/projects',
+        axios.post(apiUrl('/api/projects'),
             { title, description, techStack: tags, author, contactEmail, stage },
             { headers: { Authorization: `Bearer ${token}` } }
         )

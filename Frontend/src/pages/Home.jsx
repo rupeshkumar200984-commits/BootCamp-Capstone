@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { apiUrl } from '../lib/api.js';
 
 function Home() {
     const [projects, setProjects] = useState([]);
@@ -9,7 +10,7 @@ function Home() {
     const [currentUser, setCurrentUser] = useState(null);
 
     const fetchProjects = () => {
-        axios.get(`/api/projects?skill=${searchTerm}`)
+        axios.get(apiUrl(`/api/projects?skill=${searchTerm}`))
             .then(res => setProjects(res.data))
             .catch(err => console.error(err));
     };
@@ -36,7 +37,7 @@ function Home() {
         }
 
         try {
-            await axios.post(`/api/projects/${projectId}/apply`,
+            await axios.post(apiUrl(`/api/projects/${projectId}/apply`),
                 { studentName: currentUser.name, studentEmail: currentUser.email, message: joinMessage },
                 { headers: { Authorization: `Bearer ${token}` } }
             );

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { apiUrl } from '../lib/api.js';
 
 function Settings() {
     const [name, setName] = useState('');
@@ -42,7 +43,7 @@ function Settings() {
             .filter(s => s.length > 0);
 
         try {
-            const res = await axios.put('http://localhost:5000/api/users/profile', {
+            const res = await axios.put(apiUrl('/api/users/profile'), {
                 name,
                 role,
                 domain,

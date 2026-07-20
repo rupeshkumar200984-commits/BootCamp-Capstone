@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { apiUrl } from '../lib/api.js';
 
 const starterMentors = [
     {
@@ -63,7 +64,7 @@ function Mentors() {
         const savedBookings = JSON.parse(localStorage.getItem('axon-bookings') || '[]');
         setBookings(savedBookings);
 
-        axios.get('/api/users?role=Mentor')
+        axios.get(apiUrl('/api/users?role=Mentor'))
             .then(res => {
                 if (res.data && res.data.length > 0) {
                     const mergedMentors = res.data.map((mentor, index) => ({

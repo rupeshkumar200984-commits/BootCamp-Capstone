@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { apiUrl } from '../lib/api.js';
 
 function Dashboard() {
     const [myProjects, setMyProjects] = useState([]);
@@ -10,7 +11,7 @@ function Dashboard() {
     const token = localStorage.getItem('token');
 
     const fetchMyWorkspaceData = () => {
-        axios.get('/api/projects/user', { headers: { Authorization: `Bearer ${token}` } })
+        axios.get(apiUrl('/api/projects/user'), { headers: { Authorization: `Bearer ${token}` } })
             .then(res => setMyProjects(res.data))
             .catch(err => {
                 console.error(err);
@@ -30,7 +31,7 @@ function Dashboard() {
 
     const handleStatusUpdate = async (projectId, requestId, currentDecision) => {
         try {
-            await axios.put(`/api/projects/${projectId}/requests/${requestId}`, { status: currentDecision }, { headers: { Authorization: `Bearer ${token}` } });
+            await axios.put(apiUrl(`/api/projects/${projectId}/requests/${requestId}`), { status: currentDecision }, { headers: { Authorization: `Bearer ${token}` } });
             alert(`Applicant marked as ${currentDecision}.`);
             fetchMyWorkspaceData();
         } catch (err) {
