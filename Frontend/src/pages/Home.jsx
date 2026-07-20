@@ -9,7 +9,7 @@ function Home() {
     const [currentUser, setCurrentUser] = useState(null);
 
     const fetchProjects = () => {
-        axios.get(`http://localhost:5000/api/projects?skill=${searchTerm}`)
+        axios.get(`/api/projects?skill=${searchTerm}`)
             .then(res => setProjects(res.data))
             .catch(err => console.error(err));
     };
@@ -22,7 +22,7 @@ function Home() {
 
         const delayDebounceFn = setTimeout(() => {
             fetchProjects();
-        }, 300);
+        }, 250);
         return () => clearTimeout(delayDebounceFn);
     }, [searchTerm]);
 
@@ -31,16 +31,16 @@ function Home() {
         const token = localStorage.getItem('token');
 
         if (!token || !currentUser) {
-            alert('Please login or create an account to send joining requests!');
+            alert('Please login or create an account to send joining requests.');
             return;
         }
 
         try {
-            await axios.post(`http://localhost:5000/api/projects/${projectId}/apply`, 
+            await axios.post(`/api/projects/${projectId}/apply`,
                 { studentName: currentUser.name, studentEmail: currentUser.email, message: joinMessage },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
-            alert('Your request has been delivered to the workspace creator!');
+            alert('Your request has been delivered to the project owner.');
             setJoinMessage('');
             setActiveApplyId(null);
             fetchProjects();
@@ -53,104 +53,71 @@ function Home() {
     return (
         <div className="container">
             <div className="hero-section">
-                <h1 className="hero-title">Connect. Collaborate. Build.</h1>
-                <input 
-                    type="text" 
-                    className="form-control" 
-                    placeholder="🔍 Search skills (e.g. React, UI/UX, Java)..." 
+                <h1 className="hero-title">Build with students, mentors, and founders.</h1>
+                <p>Discover real ideas, join ambitious teams, and turn side projects into momentum with live collaboration tools.</p>
+                <input
+                    type="text"
+                    className="form-control hero-search"
+                    placeholder="Search skills like React, AI, UI/UX, Node.js..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    style={{ maxWidth: '500px', margin: '0 auto', textAlign: 'center' }}
                 />
             </div>
 
-            <h2 style={{ fontSize: '24px', marginBottom: '20px', fontWeight: '600', color: '#00e6ff' }}>Active Project Proposals</h2>
-            
-            <div>
-                {projects.length === 0 ? (
-                    <p style={{ color: '#57577a' }}>No project listings match those target filters.</p>
-                ) : (
-                    projects.map(project => {
-                        const existingRequest = project.requests?.find(
-                            req => req.studentEmail === currentUser?.email
-                        );
-
+            <div className="grid-2" style={{ alignItems: 'start' }}>
+                <div>
+                    <h2 style={{ fontSize: '24px', marginBottom: '16px', fontWeight: '700', color: '#00e6ff' }}>Open project proposals</h2>
+                    {projects.length === 0 ? (
+                        <div className="panel" style={{ textAlign: 'center', color: 'var(--text-secondary)' }}>No projects match that search yet. Try another skill or create one.</div>
+                    ) : projects.map(project => {
+                        const existingRequest = project.requests?.find(req => req.studentEmail === currentUser?.email);
                         return (
                             <div className="project-card" key={project._id}>
-                                <h3 className="card-title">{project.title}</h3>
-                                
-                                {/* Dynamic Project Milestone Status Badge */}
-                                <div style={{ margin: '8px 0 16px' }}>
-                                    <span style={{ 
-                                        fontSize: '11px', 
-                                        fontWeight: '700', 
-                                        textTransform: 'uppercase', 
-                                        letterSpacing: '0.05em',
-                                        padding: '4px 8px', 
-                                        borderRadius: '4px',
-                                        border: '1px solid #7000ff',
-                                        background: 'rgba(112, 0, 255, 0.15)',
-                                        color: '#bf94ff'
-                                    }}>
-                                        ⚙️ Status: {project.stage || 'Ideation'}
-                                    </span>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap', marginBottom: '8px' }}>
+                                    <h3 className="card-title">{project.title}</h3>
+                                    <span className="tech-tag" style={{ margin: 0 }}>Stage: {project.stage || 'Ideation'}</span>
                                 </div>
-
                                 <p className="card-desc">{project.description}</p>
-                                <div style={{ marginBottom: '16px' }}>
-                                    {project.techStack && project.techStack.map((tech, index) => (
-                                        <span className="tech-tag" key={index}>{tech}</span>
-                                    ))}
+                                <div style={{ marginBottom: '14px' }}>
+                                    {project.techStack?.map((tech, index) => <span className="tech-tag" key={index}>{tech}</span>)}
                                 </div>
-                                
                                 {existingRequest ? (
-                                    <div style={{ 
-                                        display: 'inline-block', 
-                                        padding: '8px 16px', 
-                                        borderRadius: '6px', 
-                                        background: '#0a0a14',
-                                        border: `1px solid ${
-                                            existingRequest.status === 'Accepted' ? '#34c759' : 
-                                            existingRequest.status === 'Rejected' ? '#ff3b30' : '#FFD60A'
-                                        }`,
-                                        fontSize: '13px',
-                                        marginTop: '10px'
-                                    }}>
-                                        Application Status: <strong style={{ 
-                                            color: existingRequest.status === 'Accepted' ? '#34c759' : 
-                                                   existingRequest.status === 'Rejected' ? '#ff3b30' : '#FFD60A'
-                                        }}>{existingRequest.status}</strong>
+                                    <div style={{ display: 'inline-block', padding: '8px 12px', borderRadius: '999px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: '#fff' }}>
+                                        Application status: <strong>{existingRequest.status}</strong>
                                     </div>
                                 ) : activeApplyId === project._id ? (
-                                    <form onSubmit={(e) => handleApplySubmit(e, project._id)} style={{ background: '#040408', padding: '16px', borderRadius: '8px', border: '1px solid #1f1f42', marginTop: '15px' }}>
+                                    <form onSubmit={(e) => handleApplySubmit(e, project._id)} className="panel" style={{ marginTop: '12px' }}>
                                         <div className="form-group">
-                                            <label>Briefly pitch your skills/interest:</label>
-                                            <input type="text" className="form-control" value={joinMessage} onChange={e => setJoinMessage(e.target.value)} placeholder="e.g. I am a UI/UX Designer, I can help prototype the app layout." required />
+                                            <label>Pitch yourself</label>
+                                            <input type="text" className="form-control" value={joinMessage} onChange={e => setJoinMessage(e.target.value)} placeholder="Tell them what you can contribute" required />
                                         </div>
                                         <div style={{ display: 'flex', gap: '10px' }}>
-                                            <button type="submit" className="btn-primary" style={{ padding: '6px 16px', fontSize: '13px' }}>Send Request</button>
-                                            <button type="button" className="btn-primary" style={{ backgroundColor: '#101026', color: '#FFF', padding: '6px 16px', fontSize: '13px', border: '1px solid #1f1f42' }} onClick={() => setActiveApplyId(null)}>Cancel</button>
+                                            <button type="submit" className="btn-primary">Send request</button>
+                                            <button type="button" className="btn-primary" style={{ background: '#101026', boxShadow: 'none' }} onClick={() => setActiveApplyId(null)}>Cancel</button>
                                         </div>
                                     </form>
                                 ) : (
-                                    <button 
-                                        className="btn-primary" 
-                                        style={{ padding: '8px 16px', fontSize: '13px', marginTop: '10px' }} 
-                                        onClick={() => setActiveApplyId(project._id)}
-                                        disabled={currentUser && project.user === currentUser.id}
-                                    >
-                                        {currentUser && project.user === currentUser.id ? 'Your Project Proposal' : '⚡ Apply to Collaborate'}
+                                    <button className="btn-primary" onClick={() => setActiveApplyId(project._id)} disabled={currentUser && project.user === currentUser.id}>
+                                        {currentUser && project.user === currentUser.id ? 'Your project' : 'Apply to collaborate'}
                                     </button>
                                 )}
-
                                 <div className="card-footer">
-                                    <span>Proposed by: {project.author}</span>
-                                    <span>Contact: {project.contactEmail}</span>
+                                    <span>By {project.author}</span>
+                                    <span>{project.contactEmail}</span>
                                 </div>
                             </div>
                         );
-                    })
-                )}
+                    })}
+                </div>
+
+                <div className="panel">
+                    <h3 style={{ fontSize: '18px', marginBottom: '10px', color: '#00e6ff' }}>Why teams use AXON</h3>
+                    <ul style={{ color: 'var(--text-secondary)', lineHeight: 1.8, paddingLeft: '18px' }}>
+                        <li>Launch student-led hackathons and portfolio projects faster.</li>
+                        <li>Match with mentors who can review architecture and design.</li>
+                        <li>Track applications, discuss ideas, and keep momentum in one place.</li>
+                    </ul>
+                </div>
             </div>
         </div>
     );
