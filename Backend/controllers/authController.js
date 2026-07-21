@@ -5,11 +5,11 @@ const jwt = require('jsonwebtoken');
 const registerUser = async (req, res) => {
     const { name, email, password, role, skills, domain, bio } = req.body;
     try {
-        const userExists = await User.findOne({ email });
-        if (userExists) return res.status(400).json({ message: 'User already exists' });
+        const normalizedEmail = email ? email.trim().toLowerCase() : '';
 
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
+        // Case-insensitive check so Punit@gmail.com matches punit@gmail.com
+        const userExists = await User.findOne({ email: normalizedEmail });
+        if (userExists) return res.status(400).json({ message: 'User already exists' });
 
         const normalizedSkills = Array.isArray(skills)
             ? skills.map(s => s.trim()).filter(Boolean)
@@ -17,10 +17,11 @@ const registerUser = async (req, res) => {
                 ? skills.split(',').map(s => s.trim()).filter(Boolean)
                 : [];
 
+        // Pass plain password directly so User.js pre-save hook handles hashing ONCE
         const user = await User.create({
             name,
-            email,
-            password: hashedPassword,
+            email: normalizedEmail,
+            password,
             role: role || 'Student',
             skills: normalizedSkills,
             domain: domain || '',
@@ -28,6 +29,7 @@ const registerUser = async (req, res) => {
         });
 
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET || 'secretkey123', { expiresIn: '30d' });
+        
         res.status(201).json({
             token,
             user: {
@@ -48,13 +50,16 @@ const registerUser = async (req, res) => {
 const loginUser = async (req, res) => {
     const { email, password } = req.body;
     try {
-        const user = await User.findOne({ email });
+        const normalizedEmail = email ? email.trim().toLowerCase() : '';
+
+        const user = await User.findOne({ email: normalizedEmail });
         if (!user) return res.status(400).json({ message: 'Invalid credentials' });
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
 
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET || 'secretkey123', { expiresIn: '30d' });
+        
         res.status(200).json({
             token,
             user: {
