@@ -34,6 +34,11 @@ app.use(express.urlencoded({ extended: true }));
 
 connectDB();
 
+// Root route so visiting your Render URL directly shows a clear status
+app.get('/', (req, res) => {
+    res.status(200).json({ status: 'ok', message: 'Axon API server is running smoothly!' });
+});
+
 app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', service: 'axon-api' });
 });
